@@ -66,7 +66,7 @@ class MetasploitModule < Msf::Post
 
       # Assemble the information about the SMB service for this host
       service_data = {
-          address: ::Rex::Socket.getaddress(session.sock.peerhost, true),
+          address: session.session_host,
           port: 445,
           service_name: 'smb',
           protocol: 'tcp',
@@ -89,7 +89,7 @@ class MetasploitModule < Msf::Post
 
         # Add the details for this specific credential
         credential_data[:private_data] = users[rid][:hashlm].unpack("H*")[0] +":"+ users[rid][:hashnt].unpack("H*")[0]
-        credential_data[:username]     = users[rid][:Name].downcase
+        credential_data[:username] = "#{sysinfo['Computer']}"  + '\\' + users[rid][:Name].downcase
 
         # Create the Metasploit::Credential::Core object
         credential_core = create_credential(credential_data)

