@@ -41,30 +41,20 @@ class MetasploitModule < Msf::Post
             print_status("No AV found by wmi query.")
             return
         end
-  
-        vendor="none"
-        state=0
-  
-        result.each { |k,v| 
+
+        result.each { |k,v|
             if "#{k}" == "values"
-                vendor="#{v[0][0]}"
-                state="#{v[0][1]}"
+                    print_error("#{v.count} AV found!")
+                    v.each { |a,b|
+                        isEnable = sprintf("%06x", b).upcase[2,2].to_i < 10 ? "Disabled" : "Enabled"
+                        isUpToDate = sprintf("%06x", b).upcase[4,2] == "00" ? "UpToDate" : "not UpToDate" 
+                        if isEnable == "Enabled" 
+                            print_error("#{a} is #{isEnable} and the signature database is #{isUpToDate}")
+                        else
+                            print_status("#{a} is #{isEnable} and the signature database is #{isUpToDate}") 
+                        end
+                    }
             end
         }
-  
-        out = "#{vendor} is"
-        if sprintf("%06x", state).upcase[2,2].to_i < 10
-            out = out + " disabled "
-        else
-            out = out + " enabled "
-        end
-  
-        if sprintf("%06x", state).upcase[4,2] == "00"
-            out = out + "and signature databae is UpToDate !"
-        else
-            out = out + "and signature database is not UpToDate !"
-        end
-  
-        print_error(out)
     end
 end
