@@ -99,15 +99,15 @@ module Rex
               end
             end
 
-            if paths.empty?
-              print_line("\nNo paths specified.")
-              return nil
-            end
-
             if !(modified || accessed || creation || emodified ||
                  blank_file_mace || blank_directory_mace || get_file_mace) || help
               print_line("\nUsage: timestomp <file(s)> OPTIONS\n" +
                 @@timestomp_opts.usage)
+              return nil
+            end
+
+            if paths.empty?
+              print_line("\nNo paths specified.")
               return nil
             end
 
