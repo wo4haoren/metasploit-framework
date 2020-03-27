@@ -720,7 +720,7 @@ class Console::CommandDispatcher::Stdapi::Sys
           p['name'] == search_proc
         end
       else
-        match = /#{search_proc}/!
+        match = /#{search_proc}/i
         processes = processes.select do |p|
           ["pid", "ppid", "arch", "user", "name", "path" ].any? {|m| p[m].to_s =~ match }
         end
