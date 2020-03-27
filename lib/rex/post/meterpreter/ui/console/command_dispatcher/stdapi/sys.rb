@@ -76,6 +76,7 @@ class Console::CommandDispatcher::Stdapi::Sys
     "-A" => [ true,  "Filter on architecture" ],
     "-x" => [ false, "Filter for exact matches rather than regex" ],
     "-s" => [ false, "Filter only SYSTEM processes" ],
+    "-u" => [ false, "Filter only user processes" ],
     "-c" => [ false, "Filter only child processes of the current shell" ],
     "-h" => [ false, "Help menu." ])
 
@@ -479,10 +480,17 @@ class Console::CommandDispatcher::Stdapi::Sys
       return true
     end
 
-    self_destruct = args.include?("-s")
 
-    if self_destruct
+    if args.include?("-s")
       valid_pids = [client.sys.process.getpid.to_i]
+    elsif args.include?("-p")
+      processes = client.sys.process.get_processes
+      processes.each do |p|
+        if p['pid'] == #{client.sys.process.getpid}
+          valid_pids = [p['ppid']]
+          break
+        end
+      end
     else
       valid_pids = validate_pids(args)
 
@@ -508,6 +516,7 @@ class Console::CommandDispatcher::Stdapi::Sys
     print_line("Usage: kill [pid1 [pid2 [pid3 ...]]] [-s]")
     print_line("Terminate one or more processes.")
     print_line("     -s        Kills the pid associated with the current session.")
+    print_line("     -s        Kills the ppid associated with the current session.")
   end
 
   #
@@ -678,6 +687,11 @@ class Console::CommandDispatcher::Stdapi::Sys
         processes = processes.select do |p|
           ["NT AUTHORITY\\SYSTEM", "root"].include? p['user']
         end
+      when "-u"
+        print_line "Filtering on user processes..." if !quiet
+        processes = processes.select do |p|
+          p['session'] != 0 && p['pid'] != 0
+        end
       when "-c"
         print_line "Filtering on child processes of the current shell..." if !quiet
         current_shell_pid = client.sys.process.getpid
@@ -694,9 +708,9 @@ class Console::CommandDispatcher::Stdapi::Sys
           p['name'] == search_proc
         end
       else
-        match = /#{search_proc}/
+        match = /#{search_proc}/!
         processes = processes.select do |p|
-          p['name'] =~ match
+          ["pid", "ppid", "arch", "user", "name", "path" ].any? {|m| p[m].to_s =~ match }
         end
       end
     end
