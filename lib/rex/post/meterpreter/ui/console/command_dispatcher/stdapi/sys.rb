@@ -491,6 +491,18 @@ class Console::CommandDispatcher::Stdapi::Sys
           break
         end
       end
+      ppid_exists = false
+      processes.each do |p|
+        if valid_pids.include?(p['pid'])
+          ppid_exists = true
+          break
+        end
+      end
+      if ppid_exists == false
+        valid_pids = []
+        print_status("PPID not exists!")
+        return false
+      end
     else
       valid_pids = validate_pids(args)
 
