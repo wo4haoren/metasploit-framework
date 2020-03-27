@@ -528,7 +528,7 @@ class Console::CommandDispatcher::Stdapi::Sys
     print_line("Usage: kill [pid1 [pid2 [pid3 ...]]] [-s]")
     print_line("Terminate one or more processes.")
     print_line("     -s        Kills the pid associated with the current session.")
-    print_line("     -s        Kills the ppid associated with the current session.")
+    print_line("     -p        Kills the ppid associated with the current session.")
   end
 
   #
