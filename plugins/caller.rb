@@ -21,11 +21,9 @@ module Msf
     
     # msf5 >
     ###
-    class Plugin::ThreadTest < Msf::Plugin
-      class ConsoleCommandDispatcher
-        include Msf::Ui::Console::CommandDispatcher
-    
-
+  class Plugin::ThreadTest < Msf::Plugin
+    class ConsoleCommandDispatcher
+      include Msf::Ui::Console::CommandDispatcher
         def name
           "Caller"
         end
@@ -42,27 +40,28 @@ module Msf
 
 
         @@caller_opts = Rex::Parser::Arguments.new(
-            "-a"  => [ true,  "The auxiliary module to call. "             ],
-            "-h"  => [ false, "Help banner"])
+          "-a"  => [ true,  "The (aux|post) module to call. "             ],
+          "-h"  => [ false, "Example : call -a post/windows/gather/smart_hashdump session=12"])
 
 
         def cmd_call(*args)
-            extra = nil
-            mod = nil
-            opts = {}
+          extra = nil
+          mod = nil
+          opts = {}
 
-            @@caller_opts.parse(args) do |opt, idx, val|
-                case opt
-                when "-a"
-                    mod = val
-                when "-h"
-                    cmd_caller_help
-                    return false
-                else
-                    extra = "#{extra} #{val}"
-                end
+          @@caller_opts.parse(args) do |opt, idx, val|
+            case opt
+              when "-a"
+                mod = val
+              when "-h"
+                cmd_caller_help
+                return false
+              else
+                extra = "#{extra} #{val}"
+              end
             end
 
+          unless extra.to_s.strip.empty?
             extra = extra.gsub(/=\s+/,"=").strip
             print_line
             print_status("Calling #{mod} #{extra}")
@@ -73,6 +72,9 @@ module Msf
                 print_error("Module #{mod} not found!")
             end
             print_line
+          else
+            cmd_caller_help
+          end
         end
 
         def help(opt_parser = nil, msg = 'Usage: call auxiliary OPTIONS')
