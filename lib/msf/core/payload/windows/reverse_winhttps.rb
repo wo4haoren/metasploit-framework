@@ -27,7 +27,8 @@ module Payload::Windows::ReverseWinHttps
     super
 
     register_advanced_options([
-        OptBool.new('StagerVerifySSLCert', [false, 'Whether to verify the SSL certificate hash in the handler', false])
+        OptBool.new('StagerVerifySSLCert', [false, 'Whether to verify the SSL certificate hash in the handler', false]),
+        OptString.new('StagerVerifySSLCertHash', [false, "The SHA1 hash used to verify the SSL certificate in Meterpreter"])
       ], self.class)
   end
 
@@ -37,6 +38,7 @@ module Payload::Windows::ReverseWinHttps
   def generate
 
     verify_cert_hash = get_ssl_cert_hash(datastore['StagerVerifySSLCert'],
+                                         datastore['StagerVerifySSLCertHash'],
                                          datastore['HandlerSSLCert'])
 
     super(

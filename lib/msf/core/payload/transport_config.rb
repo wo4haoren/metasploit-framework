@@ -47,7 +47,8 @@ module Msf::Payload::TransportConfig
     opts[:scheme] ||= 'https'
     config = transport_config_reverse_http(opts)
     config[:ssl_cert_hash] = get_ssl_cert_hash(ds['StagerVerifySSLCert'],
-                                               ds['HandlerSSLCert'])
+                                               ds['StagerVerifySSLCertHash'],
+                                               ds['HandlerSSLCert']
     config
   end
 

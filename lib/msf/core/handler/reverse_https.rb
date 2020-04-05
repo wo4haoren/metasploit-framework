@@ -44,7 +44,8 @@ module ReverseHttps
 
     register_advanced_options(
       [
-        OptBool.new('StagerVerifySSLCert', [false, "Whether to verify the SSL certificate in Meterpreter"])
+        OptBool.new('StagerVerifySSLCert', [false, "Whether to verify the SSL certificate in Meterpreter"]),
+        OptString.new('StagerVerifySSLCertHash', [false, "The SHA1 hash used to verify the SSL certificate in Meterpreter"])
       ], Msf::Handler::ReverseHttps)
 
   end

@@ -97,3 +97,4 @@ rspec.failures
 
 #Ignore any base disk store files
 db/modules_metadata_base.pstore
+modules/exploits/windows/smb/psexec_psh.rb

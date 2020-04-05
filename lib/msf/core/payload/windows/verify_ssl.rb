@@ -16,7 +16,7 @@ module Payload::Windows::VerifySsl
   #
   # Get the SSL hash from the certificate, if required.
   #
-  def get_ssl_cert_hash(verify_cert, handler_cert)
+  def get_ssl_cert_hash(verify_cert, cert_hash, handler_cert)
     unless verify_cert.to_s =~ /^(t|y|1)/i
       return nil
     end
@@ -26,6 +26,9 @@ module Payload::Windows::VerifySsl
     end
 
     hash = Rex::Socket::X509Certificate.get_cert_file_hash(handler_cert)
+    if cert_hash
+      hash = [cert_hash].pack('H*')
+    end
     print_status("Meterpreter will verify SSL Certificate with SHA1 hash #{hash.unpack("H*").first}")
     hash
   end
