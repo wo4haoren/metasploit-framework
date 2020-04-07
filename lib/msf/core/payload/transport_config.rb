@@ -121,7 +121,7 @@ module Msf::Payload::TransportConfig
       lhost:      '.',
       uri:        "/#{ds['PIPENAME']}",
     }.merge(timeout_config(opts))
-    
+
   end
 
 
