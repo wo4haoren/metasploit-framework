@@ -7,15 +7,15 @@ services:
     links:
       - db
     ports:
-      - 4444:4444
+      - 443:443
     volumes:
-      - $HOME/.msf4:/home/msf/.msf4
+      - $HOME/msf:/home/msf
 
   db:
-    image: postgres:10-alpine
+    image: postgres:12-alpine
     volumes:
-      - pg_data:/var/lib/postgresql/data
-
-volumes:
-  pg_data:
-    driver: local
+      - $HOME/msf/pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: msf
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
