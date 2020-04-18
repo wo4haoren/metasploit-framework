@@ -46,7 +46,7 @@ ENV METASPLOIT_GROUP=metasploit
 # used for the copy command
 RUN addgroup -S $METASPLOIT_GROUP
 
-RUN apk add --no-cache bash sqlite-libs nmap nmap-scripts nmap-nselibs postgresql-libs python python3 ncurses libcap su-exec screen postgresql vim patch less tcpdump iptables openssl
+RUN apk add --no-cache bash sqlite-libs nmap nmap-scripts nmap-nselibs postgresql-libs python python3 ncurses libcap su-exec
 
 RUN /usr/sbin/setcap cap_net_raw,cap_net_bind_service=+eip $(which ruby)
 RUN /usr/sbin/setcap cap_net_raw,cap_net_bind_service=+eip $(which nmap)
@@ -57,7 +57,6 @@ COPY . $APP_HOME/
 RUN chown -R root:metasploit $APP_HOME/
 RUN chmod 664 $APP_HOME/Gemfile.lock
 RUN cp -f $APP_HOME/docker/database.yml $APP_HOME/config/database.yml
-RUN echo -e "termcapinfo xterm* ti@:te@\ndefscrollback 100000" > /root/.screenrc && echo -e "set mouse-=a" > /root/.vimrc
 
 WORKDIR $APP_HOME
 
@@ -67,4 +66,4 @@ WORKDIR $APP_HOME
 # it results in access denied errors.
 ENTRYPOINT ["docker/entrypoint.sh"]
 
-CMD ["./msfconsole"]
+CMD ["./msfconsole", "-r", "docker/msfconsole.rc", "-y", "$APP_HOME/config/database.yml"]
