@@ -57,6 +57,7 @@ COPY . $APP_HOME/
 RUN chown -R root:metasploit $APP_HOME/
 RUN chmod 664 $APP_HOME/Gemfile.lock
 RUN cp -f $APP_HOME/docker/database.yml $APP_HOME/config/database.yml
+RUN echo -e "termcapinfo xterm* ti@:te@\ndefscrollback 100000" > /root/.screenrc && echo -e "set mouse-=a" > /root/.vimrc
 
 WORKDIR $APP_HOME
 
@@ -66,4 +67,4 @@ WORKDIR $APP_HOME
 # it results in access denied errors.
 ENTRYPOINT ["docker/entrypoint.sh"]
 
-CMD ["./msfconsole", "-r", "docker/msfconsole.rc", "-y", "$APP_HOME/config/database.yml"]
+CMD ["./msfconsole"]
